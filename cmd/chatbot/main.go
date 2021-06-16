@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	chat "google.golang.org/api/chat/v1"
 )
@@ -45,7 +46,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("BODY: %+v", string(bodyBytes))
+	log.Printf("BODY: %+v", strings.ReplaceAll(string(bodyBytes), "\n", " "))
 
 	var incoming Event
 	err = json.Unmarshal(bodyBytes, &incoming)
