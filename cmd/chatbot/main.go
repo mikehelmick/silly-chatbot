@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -32,8 +33,17 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 	response := make([]chat.Card, 1)
 	respCard := response[0]
 
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		w.Write([]byte("bad request"))
+		return
+	}
+
+	log.Printf("BODY: %+v", string(bodyBytes))
+
 	var incoming chat.Message
-	err := json.NewDecoder(r.Body).Decode(&incoming)
+	err = json.Unmarshal(bodyBytes, &incoming)
 	if err != nil {
 		respCard.Header = &chat.CardHeader{
 			Title: "Invalid Request",
