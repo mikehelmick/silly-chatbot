@@ -53,6 +53,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("REQUEST: %+v", incoming)
+
 	// Handle individual commands.
 	if incoming.SlashCommand != nil {
 		id := incoming.SlashCommand.CommandId
@@ -63,7 +65,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 					Widgets: []*chat.WidgetMarkup{
 						{
 							TextParagraph: &chat.TextParagraph{
-								Text: "<code>\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'</code>",
+								Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
 							},
 						},
 					},
@@ -76,7 +78,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 					Widgets: []*chat.WidgetMarkup{
 						{
 							TextParagraph: &chat.TextParagraph{
-								Text: "<code>\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'</code>",
+								Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
 							},
 						},
 					},
