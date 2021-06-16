@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 
 	chat "google.golang.org/api/chat/v1"
 )
@@ -31,8 +30,8 @@ func writeResponse(w http.ResponseWriter, output interface{}) {
 }
 
 type Event struct {
-	Type         string            `json:"type"`
-	SlashCommand chat.SlashCommand `json:"slashCommand"`
+	Type    string       `json:"type"`
+	Message chat.Message `json:"message"`
 }
 
 func ChatServer(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +45,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("BODY: %+v", strings.ReplaceAll(string(bodyBytes), "\n", " "))
+	//log.Printf("BODY: %+v", strings.ReplaceAll(string(bodyBytes), "\n", " "))
 
 	var incoming Event
 	err = json.Unmarshal(bodyBytes, &incoming)
@@ -72,39 +71,41 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 	log.Printf("INCOMING: %+v", incoming)
 
 	// Handle individual commands.
-	if incoming.Type == "MESSAGE" && incoming.SlashCommand.CommandId > 0 {
-		id := incoming.SlashCommand.CommandId
+	if incoming.Type == "MESSAGE" {
+		if incoming.Message.SlashCommand != nil {
+			id := incoming.Message.SlashCommand.CommandId
 
-		if id == 1 {
-			respCard.Sections = []*chat.Section{
-				{
-					Widgets: []*chat.WidgetMarkup{
-						{
-							TextParagraph: &chat.TextParagraph{
-								Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
+			if id == 1 {
+				respCard.Sections = []*chat.Section{
+					{
+						Widgets: []*chat.WidgetMarkup{
+							{
+								TextParagraph: &chat.TextParagraph{
+									Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
+								},
 							},
 						},
 					},
-				},
-			}
+				}
 
-		} else if id == 2 {
-			respCard.Sections = []*chat.Section{
-				{
-					Widgets: []*chat.WidgetMarkup{
-						{
-							TextParagraph: &chat.TextParagraph{
-								Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
+			} else if id == 2 {
+				respCard.Sections = []*chat.Section{
+					{
+						Widgets: []*chat.WidgetMarkup{
+							{
+								TextParagraph: &chat.TextParagraph{
+									Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
+								},
 							},
 						},
 					},
-				},
+				}
 			}
-		}
 
-		if len(respCard.Sections) > 0 {
-			writeResponse(w, &response)
-			return
+			if len(respCard.Sections) > 0 {
+				writeResponse(w, &response)
+				return
+			}
 		}
 	}
 
