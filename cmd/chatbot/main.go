@@ -29,6 +29,11 @@ func writeResponse(w http.ResponseWriter, output interface{}) {
 	w.Write(bytes)
 }
 
+type Event struct {
+	Type         string            `json:"type"`
+	SlashCommand chat.SlashCommand `json:"slashCommand"`
+}
+
 func ChatServer(w http.ResponseWriter, r *http.Request) {
 	response := make([]chat.Card, 1)
 	respCard := response[0]
@@ -42,7 +47,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("BODY: %+v", string(bodyBytes))
 
-	var incoming chat.Message
+	var incoming Event
 	err = json.Unmarshal(bodyBytes, &incoming)
 	if err != nil {
 		respCard.Header = &chat.CardHeader{
@@ -63,10 +68,10 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("REQUEST: %+v", incoming)
+	log.Printf("INCOMING: %+v", incoming)
 
 	// Handle individual commands.
-	if incoming.SlashCommand != nil {
+	if incoming.Type == "MESSAGE" && incoming.SlashCommand.CommandId > 0 {
 		id := incoming.SlashCommand.CommandId
 
 		if id == 1 {
