@@ -80,31 +80,25 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("INCOMING: %+v", incoming)
-
 	// Handle individual commands.
 	if incoming.Type == "MESSAGE" {
-		log.Printf("COMMAND: %+v", incoming.Message.SlashCommand)
 		if incoming.Message.SlashCommand != nil {
 			id := incoming.Message.SlashCommand.CommandId
 
 			var textResponse *TextResponse
 
 			if id == 1 {
-				log.Printf("COMMAND 1")
 				textResponse = &TextResponse{
 					Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
 				}
 
 			} else if id == 2 {
-				log.Printf("COMMAND 2")
 				textResponse = &TextResponse{
 					Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
 				}
 			}
 
 			if textResponse != nil {
-				log.Printf("RESPONSE: %+v", textResponse)
 				writeResponse(w, textResponse)
 				return
 			}
