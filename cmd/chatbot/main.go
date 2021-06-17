@@ -35,8 +35,7 @@ type Event struct {
 }
 
 func ChatServer(w http.ResponseWriter, r *http.Request) {
-	response := make([]chat.Card, 1)
-	respCard := response[0]
+	var response chat.Card
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -50,10 +49,10 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 	var incoming Event
 	err = json.Unmarshal(bodyBytes, &incoming)
 	if err != nil {
-		respCard.Header = &chat.CardHeader{
+		response.Header = &chat.CardHeader{
 			Title: "Invalid Request",
 		}
-		respCard.Sections = []*chat.Section{
+		response.Sections = []*chat.Section{
 			{
 				Widgets: []*chat.WidgetMarkup{
 					{
@@ -77,7 +76,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 			id := incoming.Message.SlashCommand.CommandId
 
 			if id == 1 {
-				respCard.Sections = []*chat.Section{
+				log.Printf("COMMAND 1")
+				response.Sections = []*chat.Section{
 					{
 						Widgets: []*chat.WidgetMarkup{
 							{
@@ -90,7 +90,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				}
 
 			} else if id == 2 {
-				respCard.Sections = []*chat.Section{
+				log.Printf("COMMAND 2")
+				response.Sections = []*chat.Section{
 					{
 						Widgets: []*chat.WidgetMarkup{
 							{
@@ -103,7 +104,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			if len(respCard.Sections) > 0 {
+			if len(response.Sections) > 0 {
+				log.Printf("RESPONSE: %+v", response)
 				writeResponse(w, &response)
 				return
 			}
