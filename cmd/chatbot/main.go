@@ -34,6 +34,10 @@ type Event struct {
 	Message chat.Message `json:"message"`
 }
 
+type TextResponse struct {
+	Text string `json:"text"`
+}
+
 type CardResponse struct {
 	Cards []*chat.Card `json:"cards"`
 }
@@ -85,38 +89,24 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		if incoming.Message.SlashCommand != nil {
 			id := incoming.Message.SlashCommand.CommandId
 
+			var textResponse *TextResponse
+
 			if id == 1 {
 				log.Printf("COMMAND 1")
-				response.Sections = []*chat.Section{
-					{
-						Widgets: []*chat.WidgetMarkup{
-							{
-								TextParagraph: &chat.TextParagraph{
-									Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
-								},
-							},
-						},
-					},
+				textResponse = &TextResponse{
+					Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
 				}
 
 			} else if id == 2 {
 				log.Printf("COMMAND 2")
-				response.Sections = []*chat.Section{
-					{
-						Widgets: []*chat.WidgetMarkup{
-							{
-								TextParagraph: &chat.TextParagraph{
-									Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
-								},
-							},
-						},
-					},
+				textResponse = &TextResponse{
+					Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
 				}
 			}
 
-			if len(response.Sections) > 0 {
-				log.Printf("RESPONSE: %+v", response)
-				writeResponse(w, makeCardResponse(&response))
+			if textResponse != nil {
+				log.Printf("RESPONSE: %+v", textResponse)
+				writeResponse(w, textResponse)
 				return
 			}
 		}
