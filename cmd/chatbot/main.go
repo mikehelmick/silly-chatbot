@@ -73,6 +73,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 	// Handle individual commands.
 	if incoming.Type == "MESSAGE" {
 		if incoming.Message.SlashCommand != nil {
+			log.Printf("COMMAND: %+v", incoming.Message.SlashCommand)
 			id := incoming.Message.SlashCommand.CommandId
 
 			if id == 1 {
