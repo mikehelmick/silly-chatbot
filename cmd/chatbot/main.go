@@ -34,6 +34,16 @@ type Event struct {
 	Message chat.Message `json:"message"`
 }
 
+type CardResponse struct {
+	Cards []*chat.Card `json:"cards"`
+}
+
+func makeCardResponse(cards ...*chat.Card) *CardResponse {
+	return &CardResponse{
+		Cards: cards,
+	}
+}
+
 func ChatServer(w http.ResponseWriter, r *http.Request) {
 	var response chat.Card
 
@@ -63,7 +73,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				},
 			},
 		}
-		writeResponse(w, &response)
+		writeResponse(w, makeCardResponse(&response))
 		return
 	}
 
@@ -106,7 +116,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 
 			if len(response.Sections) > 0 {
 				log.Printf("RESPONSE: %+v", response)
-				writeResponse(w, &response)
+				writeResponse(w, makeCardResponse(&response))
 				return
 			}
 		}
