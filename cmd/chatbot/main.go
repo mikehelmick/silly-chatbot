@@ -49,8 +49,6 @@ func makeCardResponse(cards ...*chat.Card) *CardResponse {
 }
 
 func ChatServer(w http.ResponseWriter, r *http.Request) {
-	var response chat.Card
-
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -63,6 +61,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 	var incoming Event
 	err = json.Unmarshal(bodyBytes, &incoming)
 	if err != nil {
+		var response chat.Card
 		response.Header = &chat.CardHeader{
 			Title: "Invalid Request",
 		}
@@ -112,5 +111,22 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Write([]byte(""))
+	{
+		var response chat.Card
+		response.Header = &chat.CardHeader{
+			Title: "Hello! Nice to meet you!",
+		}
+		response.Sections = []*chat.Section{
+			{
+				Widgets: []*chat.WidgetMarkup{
+					{
+						TextParagraph: &chat.TextParagraph{
+							Text: `Here is what I can help with<br><b>/drink</b> - display a drink<br><b>/holdmybeer</b> - tell the room to hold your beer`,
+						},
+					},
+				},
+			},
+		}
+		writeResponse(w, makeCardResponse(&response))
+	}
 }
