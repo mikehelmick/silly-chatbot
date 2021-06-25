@@ -121,7 +121,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				Widgets: []*chat.WidgetMarkup{
 					{
 						TextParagraph: &chat.TextParagraph{
-							Text: `Here is what I can help with<br><b>/drink</b> - display a drink<br><b>/holdmybeer</b> - tell the room to hold your beer`,
+							Text: `Here is what I can help with<br><b>/drink</b> - display a drink<br><b>/holdmybeer</b> - tell the room to hold your beer<br><b>/ascii</b> - ascii print a message`,
 						},
 					},
 				},
