@@ -100,7 +100,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 			} else if id == 3 {
 				myFigure := figure.NewFigure(incoming.Message.ArgumentText, "", true)
 				textResponse = &TextResponse{
-					Text: fmt.Sprintf("```%s\n```", myFigure.String()),
+					Text: fmt.Sprintf("```\n%s\n```", myFigure.String()),
 				}
 			}
 
