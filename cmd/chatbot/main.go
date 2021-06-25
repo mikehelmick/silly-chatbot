@@ -100,7 +100,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				}
 			} else if id == 3 {
 				asciiMsg := strings.Builder{}
-				parts := strings.Split(incoming.Message.ArgumentText, " ")
+				parts := strings.Split(strings.TrimSpace(incoming.Message.ArgumentText), " ")
 				for _, p := range parts {
 					asciiMsg.WriteString("\n")
 					myFigure := figure.NewFigure(p, "", true)
