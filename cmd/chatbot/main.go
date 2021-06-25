@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/common-nighthawk/go-figure"
 	chat "google.golang.org/api/chat/v1"
@@ -98,9 +99,16 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 					Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
 				}
 			} else if id == 3 {
-				myFigure := figure.NewFigure(incoming.Message.ArgumentText, "", true)
+				asciiMsg := strings.Builder{}
+				parts := strings.Split(incoming.Message.ArgumentText, "")
+				for _, p := range parts {
+					asciiMsg.WriteString("\n")
+					myFigure := figure.NewFigure(p, "", true)
+					asciiMsg.WriteString(myFigure.String())
+				}
+
 				textResponse = &TextResponse{
-					Text: fmt.Sprintf("```\n%s\n```", myFigure.String()),
+					Text: fmt.Sprintf("```%s\n```", asciiMsg.String()),
 				}
 			}
 
