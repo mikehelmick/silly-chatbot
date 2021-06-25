@@ -87,10 +87,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		if incoming.Message.SlashCommand != nil {
 			id := incoming.Message.SlashCommand.CommandId
 
-			log.Printf("here")
 			var textResponse *TextResponse
 			user := fmt.Sprintf("<%s> says:\n", incoming.Message.Sender.Name)
-			log.Printf("user: %q", user)
 
 			if id == 1 {
 				textResponse = &TextResponse{
@@ -116,7 +114,8 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if textResponse != nil {
-				writeResponse(w, fmt.Sprintf("%s%s", user, textResponse))
+				textResponse.Text = fmt.Sprintf("%s\n%s", user, textResponse.Text)
+				writeResponse(w, textResponse)
 				return
 			}
 		}
