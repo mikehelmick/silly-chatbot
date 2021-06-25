@@ -87,17 +87,17 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 		if incoming.Message.SlashCommand != nil {
 			id := incoming.Message.SlashCommand.CommandId
 
-			var textResponse *TextResponse
+			var response chat.Card
+			response.Header = &chat.CardHeader{
+				Title: fmt.Sprintf("%s says", incoming.Message.Sender.DisplayName),
+			}
+			var textResponse string
 
 			if id == 1 {
-				textResponse = &TextResponse{
-					Text: "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```",
-				}
+				textResponse = "```\nhold my beer...\n         . .\n       .. . *.\n- -_ _-__-0oOo\n _-_ -__ -||||)\n    ______||||______\n~~~~~~~~~~`\"\"'\n```"
 
 			} else if id == 2 {
-				textResponse = &TextResponse{
-					Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
-				}
+				textResponse = "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```"
 			} else if id == 3 {
 				asciiMsg := strings.Builder{}
 				parts := strings.Split(strings.TrimSpace(incoming.Message.ArgumentText), " ")
@@ -107,13 +107,22 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 					asciiMsg.WriteString(myFigure.String())
 				}
 
-				textResponse = &TextResponse{
-					Text: fmt.Sprintf("```%s\n```", asciiMsg.String()),
-				}
+				textResponse = fmt.Sprintf("```%s\n```", asciiMsg.String())
 			}
 
-			if textResponse != nil {
-				writeResponse(w, textResponse)
+			if textResponse != "" {
+				response.Sections = []*chat.Section{
+					{
+						Widgets: []*chat.WidgetMarkup{
+							{
+								TextParagraph: &chat.TextParagraph{
+									Text: textResponse,
+								},
+							},
+						},
+					},
+				}
+				writeResponse(w, makeCardResponse(&response))
 				return
 			}
 		}
