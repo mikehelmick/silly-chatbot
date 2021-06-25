@@ -103,7 +103,7 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 				parts := strings.Split(incoming.Message.ArgumentText, "")
 				for _, p := range parts {
 					asciiMsg.WriteString("\n")
-					myFigure := figure.NewFigure(p, "", true)
+					myFigure := figure.NewFigure(p, " ", true)
 					asciiMsg.WriteString(myFigure.String())
 				}
 
