@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/common-nighthawk/go-figure"
 	chat "google.golang.org/api/chat/v1"
 )
 
@@ -95,6 +96,11 @@ func ChatServer(w http.ResponseWriter, r *http.Request) {
 			} else if id == 2 {
 				textResponse = &TextResponse{
 					Text: "```\n                 //\n                //\n               //\n              //\n      _______||\n ,-'''       ||`-.\n(            ||   )\n|`-..._______,..-'|\n|            ||   |\n|     _______||   |\n|,-'''_ _  ~ ||`-.|\n|  ~ / `-.\\ ,-'\\ ~|\n|`-...___/___,..-'|\n|    `-./-'_ \\/_| |\n| -'  ~~     || -.|\n(   ~      ~   ~~ )\n`-..._______,..-'```",
+				}
+			} else if id == 3 {
+				myFigure := figure.NewFigure(incoming.Message.ArgumentText, "", true)
+				textResponse = &TextResponse{
+					Text: fmt.Sprintf("```%s\n```", myFigure.String()),
 				}
 			}
 
